@@ -1,0 +1,85 @@
+{
+  "Channels": [
+    {
+      "Channel": 0,
+      "Slope": 1.0,
+      "Intercept": 0.0
+    },
+    {
+      "Channel": 1,
+      "Slope": 1.1,
+      "Intercept": 0.5
+    },
+
+    {
+      "Channel": 2,
+      "Slope": 0.9,
+      "Intercept": -0.2
+    },
+    {
+      "Channel": 3,
+      "Slope": 1.2,
+      "Intercept": 0.3
+    },
+    {
+      "Channel": 4,
+      "Slope": 1.05,
+      "Intercept": 0.1
+    },
+    {
+      "Channel": 5,
+      "Slope": 0.95,
+      "Intercept": -0.1
+    },
+    {
+      "Channel": 6,
+      "Slope": 1.15,
+      "Intercept": 0.2
+    },
+    {
+      "Channel": 7,
+      "Slope": 1.0,
+      "Intercept": 0.0
+    },
+    { "Channel": 8,
+      "Slope": 1.0,
+      "Intercept": 0.0
+    },
+    {
+      "Channel": 9,
+      "Slope": 1.0,
+      "Intercept": 0.0
+    },
+    {
+      "Channel": 10,
+      "Slope": 1.0,
+      "Intercept": 0.0
+    },
+    {
+      "Channel": 11,
+      "Slope": 1.0,
+      "Intercept": 0.0
+    },
+    {
+      "Channel": 12,
+      "Slope": 1.0,
+      "Intercept": 0.0
+    },
+    {
+      "Channel": 13,
+      "Slope": 1.0,
+      "Intercept": 0.0
+    },
+    {
+      "Channel": 14,
+      "Slope": 1.0,
+      "Intercept": 0.0
+    },
+    {
+      "Channel": 15,
+      "Slope": 1.0,
+      "Intercept": 0.0
+
+    }
+  ]
+}

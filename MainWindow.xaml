@@ -1,0 +1,148 @@
+﻿<Window
+    x:Class="WpfApp2.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WpfApp2"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="NI数据采集客户端"
+    Width="1000"
+    Height="680"
+    Background="#F4F4F4"
+    mc:Ignorable="d">
+    <!--  自定义按钮样式 - 修复后的定义  -->
+    <Window.Resources>
+        <Style x:Key="AccentButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#007ACC" />
+            <Setter Property="BorderBrush" Value="#005CA3" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="5" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#005CA3" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#004080" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <!--  控制面板  -->
+        <StackPanel
+            Grid.Row="0"
+            Margin="20"
+            Background="#EAEAEA"
+            Orientation="Horizontal">
+            <Button
+                x:Name="StartButton"
+                Width="100"
+                Margin="5"
+                Click="StartButton_Click"
+                Content="开始采集"
+                Style="{StaticResource AccentButtonStyle}" />
+            <Button
+                x:Name="StopButton"
+                Width="100"
+                Margin="5"
+                Click="StopButton_Click"
+                Content="停止采集"
+                IsEnabled="False"
+                Style="{StaticResource AccentButtonStyle}" />
+            <Label
+                Margin="5"
+                VerticalAlignment="Center"
+                Content="采样率(Hz):"
+                FontSize="14" />
+            <TextBox
+                x:Name="SampleRateTextBox"
+                Width="80"
+                Margin="5"
+                FontSize="14"
+                Text="1000" />
+            <Label
+                Margin="5"
+                VerticalAlignment="Center"
+                Content="每通道采样数:"
+                FontSize="14" />
+            <TextBox
+                x:Name="SamplesPerChannelTextBox"
+                Width="80"
+                Margin="5"
+                FontSize="14"
+                Text="100" />
+            <Label
+                Margin="5"
+                VerticalAlignment="Center"
+                Content="显示通道:"
+                FontSize="14" />
+            <ComboBox
+                x:Name="ChannelComboBox"
+                Width="80"
+                Margin="5"
+                FontSize="14">
+                <ComboBoxItem Content="所有通道" />
+                <ComboBoxItem Content="通道0" />
+                <ComboBoxItem Content="通道1" />
+                <ComboBoxItem Content="通道2" />
+                <ComboBoxItem Content="通道3" />
+                <ComboBoxItem Content="通道4" />
+                <ComboBoxItem Content="通道5" />
+                <ComboBoxItem Content="通道6" />
+                <ComboBoxItem Content="通道7" />
+                <ComboBoxItem Content="通道8" />
+                <ComboBoxItem Content="通道9" />
+                <ComboBoxItem Content="通道10" />
+                <ComboBoxItem Content="通道11" />
+                <ComboBoxItem Content="通道12" />
+                <ComboBoxItem Content="通道13" />
+                <ComboBoxItem Content="通道14" />
+                <ComboBoxItem Content="通道15" />
+            </ComboBox>
+            <CheckBox
+                x:Name="AutoScaleCheckBox"
+                Margin="5"
+                VerticalAlignment="Center"
+                Content="自动缩放"
+                FontSize="14"
+                IsChecked="True" />
+
+        </StackPanel>
+        <Ellipse
+            x:Name="StatusIndicator"
+            Width="16"
+            Height="16"
+            Margin="893,30,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Fill="Gray"
+            Stroke="Black"
+            ToolTip="已停止采集" />
+
+        
+        <!--  波形显示区域  -->
+        <Canvas
+            x:Name="WaveformCanvas"
+            Grid.Row="1"
+            Margin="20"
+            Background="Black" />
+
+        <!--  状态栏  -->
+        <StatusBar Grid.Row="2" Background="#EAEAEA">
+            <StatusBarItem>
+                <TextBlock
+                    x:Name="StatusTextBlock"
+                    FontSize="14"
+                    Text="就绪" />
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
