@@ -22,7 +22,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Extensions.Logging;
-using Task = NationalInstruments.DAQmx.Task;
 
 namespace WpfApp2
 {
@@ -204,14 +203,34 @@ namespace WpfApp2
 
                 if (dataToPublish.Count > 0)
                 {
-                    // 发布批量数据
-                    redisManager.PublishMessage(RedisConfig.DataChannel, dataToPublish);
-                    // 同时存储每个通道的最新数据到Redis
-                    foreach (var data in dataToPublish.GroupBy(d => d.ChannelID).Select(g => g.Last()))
+                    System.Threading.Tasks.Task.Run(() =>
                     {
-                        string key = $"{RedisConfig.DataKeyPrefix}{data.ChannelID}";
-                        redisManager.SaveData(key, data);
-                    }
+                        try
+                        {
+                            // 发布批量数据
+                            redisManager.PublishMessage(RedisConfig.DataChannel, dataToPublish);
+                            // 同时存储每个通道的最新数据到Redis
+                            foreach (var data in dataToPublish.GroupBy(d => d.ChannelID).Select(g => g.Last()))
+                            {
+                                string key = $"{RedisConfig.DataKeyPrefix}{data.ChannelID}";
+                                redisManager.SaveData(key, data);
+                                if (RedisDataDisplay.LineCount >= 50)
+                                {
+                                    RedisDataDisplay.Clear();
+                                }
+                                RedisDataDisplay.AppendText($"[{DateTime.Now:f}] {data.Value}\n");
+                                RedisDataDisplay.ScrollToEnd();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // 捕获并记录发布异常，避免影响主采集线程
+                            Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                MessageBox.Show($"Redis发布数据失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }));
+                        }
+                    });
                 }
 
                 reader.BeginReadMultiSample(latestData.GetLength(1), OnReadComplete, null);
