@@ -46,9 +46,6 @@ namespace WpfApp2
         //常量定义
         private const int ChannelCount = 16;
 
-       
-       
-
         // 界面相关变量
         private bool isAcquiring = false;
 
@@ -204,14 +201,11 @@ namespace WpfApp2
 
                 latestData = processedData; // 更新为处理后的数据
                 Dispatcher.BeginInvoke(new Action(() => UpdateWaveformDisplay()));
-                //UpdateOutputVoltagesFromList();
+
                 if (dataToPublish.Count > 0)
                 {
-                   
-                    
                     // 发布批量数据
                     redisManager.PublishMessage(RedisConfig.DataChannel, dataToPublish);
-
                     // 同时存储每个通道的最新数据到Redis
                     foreach (var data in dataToPublish.GroupBy(d => d.ChannelID).Select(g => g.Last()))
                     {
@@ -320,14 +314,17 @@ namespace WpfApp2
 
                 if (analogInputTask != null)
                 {
-                    if(analogInputTask.IsDone)
+                    // 先停止任务再释放，避免线程冲突
+                    if (!analogInputTask.IsDone)
                     {
                         analogInputTask.Stop();
                     }
                     analogInputTask.Dispose();
-                    analogInputTask = null;
+                    analogInputTask = null; // 显式置空，避免重复释放
                 }
-                
+                // 清理Redis订阅（如果有）
+                redisManager.Unsubscribe(RedisConfig.DataChannel);
+
                 StartButton.IsEnabled = true;
                 StopButton.IsEnabled = false;
                 StatusTextBlock.Text = "已停止采集和输出";
@@ -364,6 +361,11 @@ namespace WpfApp2
         {
             try
             {
+                var devices = DaqSystem.Local.Devices;
+                if (devices == null)
+                {
+                    throw new Exception("未找到DAQ设备，请检查硬件连接");
+                }
                 analogInputTask = new NationalInstruments.DAQmx.Task("AI Task");
 
                 for (int i = 0; i < ChannelCount; i++)
@@ -394,6 +396,7 @@ namespace WpfApp2
                 MessageBox.Show($"创建数据采集任务失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 currentStatus = AcquisitionStatus.Error;
                 UpdateStatusIndicator();
+                throw;
             }
             catch (Exception ex)
             {
@@ -409,16 +412,19 @@ namespace WpfApp2
         private void UpdateWaveformDisplay()
         {
             if (latestData == null) return;
+            int samples = latestData.GetLength(1);
+            double canvasWidth = WaveformCanvas.ActualWidth;
+            double canvasHeight = WaveformCanvas.ActualHeight;
+            if (canvasWidth <= 0 || canvasHeight <= 0) return; // 避免无效尺寸
 
+            // 清理现有控件
             WaveformCanvas.Children.Clear();
+
             foreach (var channel in channelLines)
             {
                 channel.Clear();
             }
 
-            int samples = latestData.GetLength(1);
-            double canvasWidth = WaveformCanvas.ActualWidth;
-            double canvasHeight = WaveformCanvas.ActualHeight;
             double channelHeight = canvasHeight / (ChannelCount + 1);
 
             if (AutoScaleCheckBox.IsChecked == true)
@@ -508,35 +514,26 @@ namespace WpfApp2
 
         protected override void OnClosed(EventArgs e)
         {
-            try
+            // 强制停止采集
+            if (isAcquiring)
             {
-                redisManager.Dispose();
+                StopButton_Click(null, null);
+            }
 
-                // 停止数据采集任务
-                if (analogInputTask != null)
-                {
-                    analogInputTask.Stop();
-                    analogInputTask.Dispose();
-                    analogInputTask = null;
-                }
+            // 释放Redis连接
+            redisManager?.Dispose();
 
-                // 停止定时器
-                statusTimer?.Stop();
-                statusTimer?.Dispose();
+            // 停止并释放定时器
+            if (statusTimer != null)
+            {
+                statusTimer.Elapsed -= StatusTimer_Elapsed; // 移除事件订阅
+                statusTimer.Stop();
+                statusTimer.Dispose();
                 statusTimer = null;
-            }
-            catch (Exception ex)
-            {
-                // 更好的异常处理：记录详细日志
-                MessageBox.Show($"关闭窗体时发生错误: {ex.Message}, StackTrace: {ex.StackTrace}");
-            }
-            finally
-            {
-                // 强制关闭应用程序（如果需要的话）
-                Application.Current.Shutdown();
             }
 
             base.OnClosed(e);
+            Application.Current.Shutdown();
         }
     }
 }
