@@ -164,6 +164,7 @@ namespace WpfApp2
         private void OnReadComplete(IAsyncResult ar)
         {
             if (!isAcquiring) return;
+            latestData = reader.EndReadMultiSample(ar);
             int sampleCount = latestData.GetLength(1);
             int totalItems = ChannelCount * sampleCount;
             var dataToPublish = new List<DaqData>(totalItems);
