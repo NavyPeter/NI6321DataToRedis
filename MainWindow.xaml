@@ -33,7 +33,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="200" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -85,29 +84,7 @@
                 VerticalAlignment="Center"
                 Content="显示通道:"
                 FontSize="14" />
-            <ComboBox
-                x:Name="ChannelComboBox"
-                Width="80"
-                Margin="5"
-                FontSize="14">
-                <ComboBoxItem Content="所有通道" />
-                <ComboBoxItem Content="通道0" />
-                <ComboBoxItem Content="通道1" />
-                <ComboBoxItem Content="通道2" />
-                <ComboBoxItem Content="通道3" />
-                <ComboBoxItem Content="通道4" />
-                <ComboBoxItem Content="通道5" />
-                <ComboBoxItem Content="通道6" />
-                <ComboBoxItem Content="通道7" />
-                <ComboBoxItem Content="通道8" />
-                <ComboBoxItem Content="通道9" />
-                <ComboBoxItem Content="通道10" />
-                <ComboBoxItem Content="通道11" />
-                <ComboBoxItem Content="通道12" />
-                <ComboBoxItem Content="通道13" />
-                <ComboBoxItem Content="通道14" />
-                <ComboBoxItem Content="通道15" />
-            </ComboBox>
+            
             <CheckBox
                 x:Name="AutoScaleCheckBox"
                 Margin="5"
@@ -127,16 +104,13 @@
             Stroke="Black"
             ToolTip="已停止采集" />
 
-        <!--  波形显示区域  -->
-        <Canvas
-            x:Name="WaveformCanvas"
-            Grid.Row="1"
-            Margin="10"
-            Background="Black" />
+       
+
+
 
         <TextBox
             x:Name="RedisDataDisplay"
-            Grid.Row="2"
+            Grid.Row="1"
             Margin="10"
             Background="#1E1E1E"
             Foreground="#00FF00"
@@ -148,7 +122,7 @@
             TextWrapping="NoWrap" />
 
         <!--  状态栏  -->
-        <StatusBar Grid.Row="3" Background="#EAEAEA">
+        <StatusBar Grid.Row="2" Background="#EAEAEA">
             <StatusBarItem>
                 <TextBlock
                     x:Name="StatusTextBlock"

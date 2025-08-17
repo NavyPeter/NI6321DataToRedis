@@ -122,6 +122,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DaqData.cs" />
+    <Compile Include="DaqManager.cs" />
+    <Compile Include="Interfaces.cs" />
+    <Compile Include="RedisClient.cs" />
     <Compile Include="RedisConfig.cs" />
     <Compile Include="RedisManager.cs" />
     <Page Include="MainWindow.xaml">
